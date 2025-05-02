@@ -73,7 +73,64 @@
       padding: 20px;
       color: white;
     }
+    .bold{
+      font-weight: 500;
+      background-color: rgb(255, 255, 154);
+    }
   </style>
+  <script>
+const $h_obj = (x) => Object.prototype.toString.call(x).slice(8, 14) === "Object";
+function $h() {
+    let i;
+    const main = document.createElement(arguments[0]);
+    let child = [];
+    if (arguments[1]) {
+        if ($h_obj(arguments[1])) {
+            for (i in arguments[1]) {
+                if (i in HTMLElement.prototype) {
+                    if ($h_obj(arguments[1][i])) {
+                        for (var k in arguments[1][i]) {
+                            main[i][k] = arguments[1][i][k]
+                        }
+                    } else {
+                        main[i] = arguments[1][i]
+                    }
+                } else {
+                    main.setAttribute(i, arguments[1][i])
+                }
+            }
+        } else {
+            child.push(arguments[1])
+        }
+        if (arguments[2]) {
+            child.push(arguments[2])
+        }
+    }
+    if (child.length) {
+        child = $h_flat(child);
+        for (i in child) {
+            if (Object.prototype.toString.call(child[i].__proto__.__proto__.__proto__).slice(8, 15) === "Element") {
+                main.append(child[i])
+            } else {
+                main.innerText = child[i]
+            }
+        }
+    }
+    return main;
+}
+
+function $h_flat(arr) {
+    var t = [];
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] instanceof Array) {
+            t = t.concat($h_flat(arr[i]))
+        } else {
+            t.push(arr[i])
+        }
+    }
+    return t
+}
+  </script>
 </head>
 
 <body>
@@ -88,8 +145,9 @@
 var p={};
 var Plist=0;
 const delta=-9
+var t=['b1','b2','xb1','xb2','xb3']
+var t2=['必修一','必修二','选择性必修一','选择性必修二','选择性必修三']
 async function get(){
-    var t=['b1','b2','xb1','xb2','xb3']
     for(var i=0;i<5;i++){
         p[t[i]]=JSON.parse(await fetch("./"+t[i]+'.json').then(e=>e.text()))
     }
@@ -97,13 +155,33 @@ async function get(){
 get();
 const hia=document.querySelector("#hia");
 const v=document.querySelector("#v");
+const res=document.querySelector(".result-container");
 const search=(s)=>p.map(e=>{var u=[];e.forEach((r,i)=>{if(r.includes(s)){u.push(i)}});return u;})
+const Got=(str,k)=>[...str.matchAll(new RegExp(".{0,20}"+k+".{0,20}", "g"))].map(e=>e[0].replaceAll(k,"<span class='bold'>"+k+"</span>"))
+function AdderBook(book){
+  res.appendChild($h('hr'))
+  res.appendChild($h("h1",{innerText:t2[book]}))
+}
+function Adder(page,arr){
+  res.appendChild($h('h3',{innerText:"第"+page+"页"}))
+  arr.forEach(e=>res.appendChild($h('div',{innerHTML:e})))
+}
 hia.onclick=()=>{
-    var w={};
+  if(v.value.length=0){}
+  
+    var rt=[];
+    var addd=false
     if(Object.keys(p).length==5){
-        w=search(v.value)
+      for(var i=0;i<5;i++){
+        for(var j=0;j<p[t[i]].length;j++){
+          rt=Got(p[t[i]],v.value);
+          if(tr.length){if(!addd){AdderBook(i);addd=true;};Adder(j+1+delta,rt)}
+          rt=[]
+        }
+        addd=false;
+      }
+      //w=search(v.value)
     }
-    console.log(w)
 }
 </script>
 </body>
