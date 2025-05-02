@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>玻璃拟态搜索页面</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #000;
+      background-image: linear-gradient(135deg, #ffc6c6 0%, #cf89ff 100%);
+    }
+
+   .search-container {
+    min-width: 246px;
+    max-width: 485.5px;
+    width: 50%;
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 10px 20px;
+    }
+
+    input[type="text"] {
+      font-family: "黑体";
+        width: calc(100% - 100px);
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      background: transparent;
+      color: black;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: none;
+      color: black;
+      border: none;
+      border-left: 2px solid black;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-family: "黑体";
+    }
+
+    button:hover {
+      background-color: rgba(0, 123, 255, 1);
+    }
+
+   .result-container {
+    width: 70%;
+      min-height: 200px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="search-container">
+    <input id="v" type="text" placeholder="请输入搜索内容">
+    <button id="hia">搜索</button>
+  </div>
+  <div class="result-container">
+    
+  </div>
+<script>
+var p={};
+var Plist=0;
+const delta=-9
+async function get(){
+    var t=['b1','b2','xb1','xb2','xb3']
+    for(var i=0;i<5;i++){
+        p[t[i]]=JSON.parse(await fetch("./"+t[i]+'.json').then(e=>e.text()))
+    }
+}
+get();
+const hia=document.querySelector("#hia");
+const v=document.querySelector("#v");
+const search=(s)=>p.map(e=>{var u=[];e.forEach((r,i)=>{if(r.includes(s)){u.push(i)}});return u;})
+hia.onclick=()=>{
+    var w={};
+    if(Object.keys(p).length==5){
+        w=search(v.value)
+    }
+    console.log(w)
+}
+</script>
+</body>
+
+</html>
