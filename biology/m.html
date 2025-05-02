@@ -174,7 +174,7 @@ hia.onclick=()=>{
     if(Object.keys(p).length==5){
       for(var i=0;i<5;i++){
         for(var j=0;j<p[t[i]].length;j++){
-          rt=Got(p[t[i]],v.value);
+          rt=Got(p[t[i]][j],v.value);
           if(tr.length){if(!addd){AdderBook(i);addd=true;};Adder(j+1+delta,rt)}
           rt=[]
         }
