@@ -1,20 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>玻璃拟态搜索页面</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #000;
+      background-image: linear-gradient(135deg, #ffc6c6 0%, #cf89ff 100%);
+    }
+
+   .search-container {
+    min-width: 246px;
+    max-width: 485.5px;
+    width: 50%;
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 10px 20px;
+    }
+
+    input[type="text"] {
+      font-family: "黑体";
+        width: calc(100% - 100px);
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      background: transparent;
+      color: black;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: none;
+      color: black;
+      border: none;
+      border-left: 2px solid black;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-family: "黑体";
+    }
+
+    button:hover {
+      color: #fded69;
+    }
+
+   .result-container {
+    font-family: "黑体";
+    font-size: 20px;
+    width: 70%;
+      min-height: 200px;
+      max-height: 500px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      color: black;
+    }
+    .bold{
+      font-weight: 500;
+      background-color: rgb(118, 185, 125);
+    }
+    h1{
+      text-align: center;
+    }
+  </style>
+  <script>
+const $h_obj = (x) => Object.prototype.toString.call(x).slice(8, 14) === "Object";
+function $h() {
+    let i;
+    const main = document.createElement(arguments[0]);
+    let child = [];
+    if (arguments[1]) {
+        if ($h_obj(arguments[1])) {
+            for (i in arguments[1]) {
+                if (i in HTMLElement.prototype) {
+                    if ($h_obj(arguments[1][i])) {
+                        for (var k in arguments[1][i]) {
+                            main[i][k] = arguments[1][i][k]
+                        }
+                    } else {
+                        main[i] = arguments[1][i]
+                    }
+                } else {
+                    main.setAttribute(i, arguments[1][i])
+                }
+            }
+        }
+    }
+    return main;
+}
+</script>
 </head>
+
 <body>
+  <div class="search-container">
+    <input id="v" type="text" placeholder="请输入搜索内容">
+    <button id="hia">搜索</button>
+  </div>
+  <div style="margin-bottom: 15px;font-family: '黑体';">两侧文字数<select id="num" style="background: white;border: 0;border-radius: 5px;margin-left: 10px;padding: 5px 20px;">
+    <option value="10">10</option>
+    <option value="20" selected="">20</option>
+    <option value="30">30</option>
+    <option value="40">40</option>
+    </select></div>
+  <div class="result-container">
+    
+  </div>
 <script>
-var p=[];
+var p={};
+var Plist=0;
+const delta=-9
+var t=['b1','b2','xb1','xb2','xb3']
+var t2=['必修一','必修二','选择性必修一','选择性必修二','选择性必修三']
 async function get(){
-    var t=['b1','b2','xb1','xb2','xb3']
     for(var i=0;i<5;i++){
-        p.push(JSON.parse(await fetch("./"+t[i]+'.json').then(e=>e.text())))
+        p[t[i]]=JSON.parse(await fetch("https://ysyz.is-a.dev/biology/"+t[i]+'.json').then(e=>e.text()))
     }
 }
-
+get();
+const hia=document.querySelector("#hia");
+const v=document.querySelector("#v");
+const res=document.querySelector(".result-container");
+const search=(s)=>p.map(e=>{var u=[];e.forEach((r,i)=>{if(r.includes(s)){u.push(i)}});return u;})
+const numer=document.querySelector("#num")
+const Got=(str,k)=>[...str.matchAll(new RegExp(".{0,"+numer.value+"}"+k+".{0,"+numer.value+"}", "g"))].map(e=>e[0].replaceAll(k,"<span class='bold'>"+k+"</span>"))
+function AdderBook(book){
+  if(book!=0)res.appendChild($h('hr'))
+  res.appendChild($h("h1",{innerText:t2[book]}))
+}
+function Adder(page,arr){
+  res.appendChild($h('h3',{innerText:"第"+page+"页"}))
+  var gw=$h('ul');
+  arr.forEach(e=>gw.appendChild($h('li',{innerHTML:'......'+e+'......'})))
+  res.appendChild(gw);
+}
+hia.onclick=()=>{
+  res.innerHTML="";
+  if(v.value.length=0){}
+  
+    var rt=[];
+    var addd=false
+    if(Object.keys(p).length==5){
+      for(var i=0;i<5;i++){
+        for(var j=0;j<p[t[i]].length;j++){
+          rt=Got(p[t[i]][j],v.value);
+          if(rt.length){if(!addd){AdderBook(i);addd=true;};Adder(j+1+delta,rt)}
+          rt=[]
+        }
+        addd=false;
+      }
+      //w=search(v.value)
+    }
+}
 </script>
 </body>
+
 </html>
