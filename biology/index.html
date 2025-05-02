@@ -150,8 +150,8 @@ function AdderBook(book){
   if(book!=0)res.appendChild($h('hr'))
   res.appendChild($h("h1",{innerText:t2[book]}))
 }
-function Adder(page,arr){
-  res.appendChild($h('h3',{innerText:"第"+page+"页"}))
+function Adder(page,arr,fir){
+  if(!fir)res.appendChild($h('h3',{innerText:"第"+page+"页"}))
   var gw=$h('ul');
   arr.forEach(e=>gw.appendChild($h('li',{innerHTML:'......'+e+'......'})))
   res.appendChild(gw);
@@ -172,18 +172,20 @@ hia.onclick=()=>{
   
     var rt=[];
     var color=v.value.replaceAll('；',';').split(";").map(()=>ToC(getColor()));
-    var addd=false
+    var addd=false;
+    var fir=false;
     if(Object.keys(p).length==5){
       for(var i=0;i<5;i++){
         for(var j=0;j<p[t[i]].length;j++){
+
           v.value.replaceAll('；',';').split(";").forEach((e,s)=>{
             if(e.length){
               rt=Got(p[t[i]][j],e,color[s]);
-              if(rt.length){if(!addd){AdderBook(i);addd=true;};Adder(j+1+delta,rt)}
+              if(rt.length){if(!addd){AdderBook(i);addd=true;};Adder(j+1+delta,rt,fir);fir=true;}
               rt=[]
             }
-        }
-        )
+          })
+          fir=false
           
         }
         addd=false;
