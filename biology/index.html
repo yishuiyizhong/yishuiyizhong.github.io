@@ -80,7 +80,7 @@
     }
     .bold{
       font-weight: 500;
-      background-color: rgb(118, 185, 125);
+      background-color: rgb(129, 173, 134);
     }
     h1{
       text-align: center;
@@ -145,7 +145,7 @@ const v=document.querySelector("#v");
 const res=document.querySelector(".result-container");
 const search=(s)=>p.map(e=>{var u=[];e.forEach((r,i)=>{if(r.includes(s)){u.push(i)}});return u;})
 const numer=document.querySelector("#num")
-const Got=(str,k)=>[...str.matchAll(new RegExp(".{0,"+numer.value+"}"+k+".{0,"+numer.value+"}", "g"))].map(e=>e[0].replaceAll(k,"<span class='bold'>"+k+"</span>"))
+const Got=(str,k,color)=>[...str.matchAll(new RegExp(".{0,"+numer.value+"}"+k+".{0,"+numer.value+"}", "g"))].map(e=>e[0].replaceAll(k,"<span class='bold' style=\"background:"+color+"\";>"+k+"</span>"))
 function AdderBook(book){
   if(book!=0)res.appendChild($h('hr'))
   res.appendChild($h("h1",{innerText:t2[book]}))
@@ -156,18 +156,35 @@ function Adder(page,arr){
   arr.forEach(e=>gw.appendChild($h('li',{innerHTML:'......'+e+'......'})))
   res.appendChild(gw);
 }
+const RC=()=>Array(3).fill().map(e=>Math.floor(Math.random() * 256));
+const rTG=(r,g,b) =>{var w=Math.round(0.299*r+0.587*g+0.114*b);return w<178&&w>138}
+const ToC=(arr)=>"rgb("+arr[0]+","+arr[1]+","+arr[2]+")"
+function getColor(){
+  var y=RC();
+  while(!rTG.apply(null,y)){
+    y=RC()
+  }
+  return y;
+}
 hia.onclick=()=>{
   res.innerHTML="";
   if(v.value.length=0){}
   
     var rt=[];
+    var color=v.value.replaceAll('；',';').split(";").map(()=>ToC(getColor()));
     var addd=false
     if(Object.keys(p).length==5){
       for(var i=0;i<5;i++){
         for(var j=0;j<p[t[i]].length;j++){
-          rt=Got(p[t[i]][j],v.value);
-          if(rt.length){if(!addd){AdderBook(i);addd=true;};Adder(j+1+delta,rt)}
-          rt=[]
+          v.value.replaceAll('；',';').split(";").forEach((e,s)=>{
+            if(e.length){
+              rt=Got(p[t[i]][j],e,color[s]);
+              if(rt.length){if(!addd){AdderBook(i);addd=true;};Adder(j+1+delta,rt)}
+              rt=[]
+            }
+        }
+        )
+          
         }
         addd=false;
       }
