@@ -8,7 +8,7 @@ function Var(s,o){
                 return o.address[eval(s.replaceAll('\''+l,String(o.address[o[l]])))]
             //}
         }
-        return o.address[o[s.slice(1)]]
+        //return o.address[o[s.slice(1)]]
     }
     return Number(s)
 }
@@ -57,7 +57,7 @@ function t(s,o){
     if(p.length){arr.push(Var(p,o))}
     return {type:w1,arr:arr}
 }
-const C=(arr)=>({r:arr[0]/255,g:arr[1]/255,b:arr[2]/255})
+const C=(arr)=>new THREE.Color(arr[0],arr[1],arr[2])//({r:arr[0]/255,g:arr[1]/255,b:arr[2]/255})
 function reParse(o){
     var AtomPos=[];//[x,y,z,r,C]
     var Bonds=[];//[x0,y0,z0,x1,y1,z1,r,C] or [Point0,Point1,r,C]
@@ -126,41 +126,3 @@ function Parse(code){
     }
     return o
 }
-
-code=`
-'Na0=Color(255,255,255)
-'Cl0=Color(0,255,0)
-'Bond=Color(200,200,200)
-'r=0.5
-Na:
-    Atom(1,1,1,'r,'Na0)
-    Atom(1,1,-1,'r,'Na0)
-    Atom(1,-1,1,'r,'Na0)
-    Atom(1,-1,-1,'r,'Na0)
-    Atom(-1,1,1,'r,'Na0)
-    Atom(-1,1,-1,'r,'Na0)
-    Atom(-1,-1,1,'r,'Na0)
-    Atom(-1,-1,-1,'r,'Na0)
-    Atom(1,0,0,'r,'Na0)
-    Atom(-1,0,0,'r,'Na0)
-    Atom(0,1,0,'r,'Na0)
-    Atom(0,-1,0,'r,'Na0)
-    Atom(0,0,1,'r,'Na0)
-    Atom(0,0,-1,'r,'Na0)
-Cl:
-    'W=Atom(0,0,0,'r,'Cl0)
-    Atom(1,1,0,'r,'Cl0)
-    Atom(-1,1,0,'r,'Cl0)
-    Atom(-1,-1,0,'r,'Cl0)
-    Atom(1,-1,0,'r,'Cl0)
-    Atom(1,0,1,'r,'Cl0)
-    Atom(-1,0,1,'r,'Cl0)
-    Atom(-1,0,-1,'r,'Cl0)
-    Atom(1,0,-1,'r,'Cl0)
-    Atom(0,-1,1,'r,'Cl0)
-    Atom(0,1,-1,'r,'Cl0)
-    Atom(0,-1,-1,'r,'Cl0)
-    Atom(0,1,1,'r,'Cl0)
-ChemistryBond:
-    Bond('Cl+1,'Cl+2,'r,'Bond)
-`
