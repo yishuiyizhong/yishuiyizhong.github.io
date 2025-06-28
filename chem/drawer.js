@@ -101,3 +101,54 @@ function createAtoms(arr) {
     }
     return group;
 }
+
+
+
+const p0=new THREE.GridHelper(10, 10, 0xffffff, 0xffffff);
+const p1=new THREE.GridHelper(10, 10, 0xffffff, 0xffffff);
+const p2=new THREE.GridHelper(10, 10, 0xffffff, 0xffffff);
+p1.rotation.z = Math.PI / 2;
+p2.rotation.x = Math.PI / 2;
+p0.visible = false;
+p1.visible = false;
+p2.visible = false;
+scene.add(p0);
+scene.add(p1);
+scene.add(p2);
+
+function createThickAxesWithLines(size = 5, thickness = 0.05) {
+  const group = new THREE.Group();
+  
+  const material = new THREE.LineBasicMaterial({ linewidth: thickness });
+  
+  const xPoints = [];
+  xPoints.push(new THREE.Vector3(0, 0, 0));
+  xPoints.push(new THREE.Vector3(size, 0, 0));
+  const xGeometry = new THREE.BufferGeometry().setFromPoints(xPoints);
+  const xAxis = new THREE.LineSegments(xGeometry, material.clone());
+  xAxis.material.color.set(0xff0000);
+  group.add(xAxis);
+  
+  const yPoints = [];
+  yPoints.push(new THREE.Vector3(0, 0, 0));
+  yPoints.push(new THREE.Vector3(0, size, 0));
+  const yGeometry = new THREE.BufferGeometry().setFromPoints(yPoints);
+  const yAxis = new THREE.LineSegments(yGeometry, material.clone());
+  yAxis.material.color.set(0x00ff00);
+  group.add(yAxis);
+  
+  const zPoints = [];
+  zPoints.push(new THREE.Vector3(0, 0, 0));
+  zPoints.push(new THREE.Vector3(0, 0, size));
+  const zGeometry = new THREE.BufferGeometry().setFromPoints(zPoints);
+  const zAxis = new THREE.LineSegments(zGeometry, material.clone());
+  zAxis.material.color.set(0x0000ff);
+  group.add(zAxis);
+  
+  return group;
+}
+
+// 使用方法
+const p3 = createThickAxesWithLines(6, 3); // 长度为5，粗细为3（像素单位）
+p3.visible = false;
+scene.add(p3);
