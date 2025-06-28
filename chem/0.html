@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可展开的固定按钮</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <!-- 引入 JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <style>
+        /* 基础样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Consolas, "Courier New", monospace,HeiTi;
+            min-height: 100vh;
+            background-color: #f9fafb;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* 展开按钮样式 */
+        .fixed-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fixed-button.expanded {
+            bottom: 3vh;
+            right: 3vw;
+        }
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 9999px;
+            width: 3.5rem;
+            height: 3.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .button:hover {
+            background-color: #2563eb;
+            transform: scale(1.05);
+        }
+        .button::before {
+            content: '💬';
+            font-size: 1.5rem;
+        }
+        .button.expanded::before {
+            content: '✖';
+        }
+        .content {
+            position: absolute;
+            position: absolute;
+            bottom: 1.75rem;
+            right: 1.75rem;
+            width: 0;
+            height: 0;
+            background-color: rgb(247, 247, 247);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fixed-button.expanded .content {
+          width: clamp(280px, 30vw, 500px);
+          height: clamp(300px, calc(88vh - 3.5rem), 100vh);
+          padding: 1.5rem;
+        }
+        .content-header {
+            height: 6vh;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transition: opacity 0.2s ease 0.1s;
+        }
+        .fixed-button.expanded .content-header {
+            opacity: 1;
+        }
+        .content-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .CodeMirror{
+          width: 100%;
+          height: calc(100% - 6vh - 1rem);
+          font-family: Consolas, "Courier New", monospace,HeiTi;
+        }
+        .content-header>button{
+          float:right;
+          margin-left:20px;
+          height: 6vh;
+          border: none;
+          background: #b4b4ff;
+          width: clamp(40px,60px,100px);
+          border-radius: 10px;
+        }.content-header>span{
+            float: right;
+            margin-left: 20px;
+            height: 16px;
+            border: none;
+            width: fit-content;
+            border-radius: 10px;
+            font-size: 23px;
+            font-weight: 600;
+            padding: calc(3vh - 11.5px) 0 calc(3vh - 11.5px) 0;
+        }
+        #closeButton{
+          background:rgb(255, 184, 184);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-button" id="fixedButton">
+        <button class="button" id="toggleButton"></button>
+        <div class="content">
+            <div class="content-header">
+                <button class="close-button" id="closeButton">✖</button>
+                <button id="drawer">绘制</button>
+                <span>Chemistry Toooool</span>
+            </div>
+                <textarea id="code">
+#NaCl示例
+'Na0=Color(255,255,255)
+'Cl0=Color(0,255,0)
+'Bond=Color(200,200,200)
+'r=0.7
+'r1=0.2
+Na:
+    Atom(2,2,2,'r,'Na0)
+    Atom(2,2,-2,'r,'Na0)
+    Atom(2,-2,2,'r,'Na0)
+    Atom(2,-2,-2,'r,'Na0)
+    Atom(-2,2,2,'r,'Na0)
+    Atom(-2,2,-2,'r,'Na0)
+    Atom(-2,-2,2,'r,'Na0)
+    Atom(-2,-2,-2,'r,'Na0)
+    Atom(2,0,0,'r,'Na0)
+    Atom(-2,0,0,'r,'Na0)
+    Atom(0,2,0,'r,'Na0)
+    Atom(0,-2,0,'r,'Na0)
+    Atom(0,0,2,'r,'Na0)
+    Atom(0,0,-2,'r,'Na0)
+Cl:
+    'W=Atom(0,0,0,'r,'Cl0)
+    Atom(2,2,0,'r,'Cl0)
+    Atom(-2,2,0,'r,'Cl0)
+    Atom(-2,-2,0,'r,'Cl0)
+    Atom(2,-2,0,'r,'Cl0)
+    Atom(2,0,2,'r,'Cl0)
+    Atom(-2,0,2,'r,'Cl0)
+    Atom(-2,0,-2,'r,'Cl0)
+    Atom(2,0,-2,'r,'Cl0)
+    Atom(0,-2,2,'r,'Cl0)
+    Atom(0,2,-2,'r,'Cl0)
+    Atom(0,-2,-2,'r,'Cl0)
+    Atom(0,2,2,'r,'Cl0)
+ChemistryBond:
+    Bond('Cl+1,'Cl+2,'r1,'Bond)</textarea>
+        </div>
+    </div>
+
+    <script>
+      const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+            lineNumbers: true,
+            lineWrapping: true  
+        });
+        // 按钮展开/收起功能
+        const fixedButton = document.getElementById('fixedButton');
+        const toggleButton = document.getElementById('toggleButton');
+        const closeButton = document.getElementById('closeButton');
+
+        toggleButton.addEventListener('click', () => {
+            fixedButton.classList.toggle('expanded');
+            toggleButton.classList.toggle('expanded');
+        });
+
+        closeButton.addEventListener('click', () => {
+            fixedButton.classList.remove('expanded');
+            toggleButton.classList.remove('expanded');
+        });
+    </script>
+</body>
+</html>
+    
