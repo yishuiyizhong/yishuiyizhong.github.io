@@ -57,7 +57,7 @@ function t(s,o){
     if(p.length){arr.push(Var(p,o))}
     return {type:w1,arr:arr}
 }
-const C=(arr)=>new THREE.Color(arr[0],arr[1],arr[2])//({r:arr[0]/255,g:arr[1]/255,b:arr[2]/255})
+const C=(arr)=>new THREE.Color((arr[0]<<16)+(arr[1]<<8)+arr[2])//({r:arr[0]/255,g:arr[1]/255,b:arr[2]/255})
 function reParse(o){
     var AtomPos=[];//[x,y,z,r,C]
     var Bonds=[];//[x0,y0,z0,x1,y1,z1,r,C] or [Point0,Point1,r,C]
